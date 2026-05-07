@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gerador de Relatórios Institucionais (DOCX → PDF)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero">
+        <h1>DOCX → PDF Institucional</h1>
+        <p>
+          Faça upload de um arquivo <strong>.docx</strong> para gerar um PDF com diagramação corporativa,
+          visual analítico e identidade institucional.
+        </p>
+      </section>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <section class="messages">
+            {% for category, message in messages %}
+              <p class="message {{ category }}">{{ message }}</p>
+            {% endfor %}
+          </section>
+        {% endif %}
+      {% endwith %}
+
+      <section class="card">
+        <h2>Enviar arquivo DOCX</h2>
+        <form action="{{ url_for('generate') }}" method="post" enctype="multipart/form-data">
+          <label for="docx_file" class="upload-label">
+            Selecionar documento
+            <input id="docx_file" name="docx_file" type="file" accept=".docx" required />
+          </label>
+          <button type="submit">Gerar PDF</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
