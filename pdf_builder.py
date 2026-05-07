@@ -333,6 +333,7 @@ def _add_toc(story: list, heading_style: ParagraphStyle):
     toc = TableOfContents()
     toc.levelStyles = [
         ParagraphStyle(
+            name="TOCLevel1",
             fontName="Helvetica",
             fontSize=10,
             textColor=MAIN_TEXT,
@@ -341,6 +342,7 @@ def _add_toc(story: list, heading_style: ParagraphStyle):
             spaceBefore=2,
         ),
         ParagraphStyle(
+            name="TOCLevel2",
             fontName="Helvetica",
             fontSize=9,
             textColor=SECONDARY_TEXT,
@@ -349,6 +351,7 @@ def _add_toc(story: list, heading_style: ParagraphStyle):
             spaceBefore=1,
         ),
         ParagraphStyle(
+            name="TOCLevel3",
             fontName="Helvetica",
             fontSize=8.5,
             textColor=SECONDARY_TEXT,
