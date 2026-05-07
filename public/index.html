@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DOCX para PDF institucional</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero__content">
+          <p class="eyebrow">Automacao editorial</p>
+          <h1>Transforme DOCX em PDFs institucionais de inteligencia tecnica</h1>
+          <p>
+            Envie um arquivo Word e gere um PDF A4 com capa, sumario, divisorias,
+            tabelas azuis, cabecalhos, rodapes e contracapa no estilo corporativo
+            do Observatorio da Industria / Sistema FIEA.
+          </p>
+        </div>
+        <div class="hero__card" aria-hidden="true">
+          <span></span>
+          <strong>PDF</strong>
+          <small>relatorio tecnico</small>
+        </div>
+      </section>
+
+      <section class="uploader" aria-labelledby="upload-title">
+        <div>
+          <p class="eyebrow">Upload DOCX</p>
+          <h2 id="upload-title">Gerar PDF profissional</h2>
+          <p class="uploader__intro">
+            O conteudo original e preservado. A aplicacao aplica hierarquia visual,
+            estilos institucionais, paginação, tabelas, figuras e elementos de capa.
+          </p>
+        </div>
+
+        <form id="upload-form" class="upload-form">
+          <label id="drop-zone" class="drop-zone" for="docx-input">
+            <input id="docx-input" name="docx" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <span class="drop-zone__icon">DOCX</span>
+            <strong>Escolher arquivo DOCX</strong>
+            <small>ou arraste o arquivo para esta area (max. 30 MB)</small>
+            <em id="file-name">Nenhum arquivo selecionado</em>
+          </label>
+
+          <button id="submit-button" type="submit">
+            <span>Gerar PDF</span>
+          </button>
+        </form>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="features" aria-label="Recursos do gerador">
+        <article>
+          <h3>Layout editorial</h3>
+          <p>Capa azul, divisorias de secao, grade A4, cabecalhos e contracapa institucional.</p>
+        </article>
+        <article>
+          <h3>Conteudo preservado</h3>
+          <p>Texto, titulos, tabelas, imagens, legendas, fontes, referencias e anexos seguem no PDF.</p>
+        </article>
+        <article>
+          <h3>Tabelas e figuras</h3>
+          <p>Cabecalho azul escuro, linhas alternadas claras, bordas discretas e legendas padronizadas.</p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

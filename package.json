@@ -1,0 +1,40 @@
+{
+  "name": "docx-intelligence-report-pdf",
+  "version": "1.0.0",
+  "description": "Upload DOCX files and generate institutional intelligence-report PDFs.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run",
+    "install:browsers": "playwright install chromium"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PedroXLima/teste.git"
+  },
+  "keywords": [
+    "docx",
+    "pdf",
+    "reports",
+    "document-automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PedroXLima/teste/issues"
+  },
+  "homepage": "https://github.com/PedroXLima/teste#readme",
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "express": "^5.2.1",
+    "mammoth": "^1.12.0",
+    "multer": "^2.1.1",
+    "playwright": "^1.59.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.5"
+  }
+}
