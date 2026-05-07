@@ -69,7 +69,7 @@ export function decorateBodyHtml(html, title) {
       $paragraph.addClass("image-card");
     }
 
-    if ($paragraph.hasClass("callout-source")) {
+    if ($paragraph.hasClass("callout-source") || isCalloutText($paragraph.text())) {
       const text = normalizeWhitespace($paragraph.text());
       const [label, ...rest] = text.split(":");
       $paragraph.replaceWith(`
@@ -212,6 +212,10 @@ function normalize(value) {
 
 function normalizeWhitespace(value) {
   return value.replace(/\s+/g, " ").trim();
+}
+
+function isCalloutText(value) {
+  return /^(insight|recomendacao|recomendação|atencao|atenção|risco|oportunidade)\s*:/i.test(normalizeWhitespace(value));
 }
 
 function escapeHtml(value) {

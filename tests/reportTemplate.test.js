@@ -25,6 +25,19 @@ describe("report generation", () => {
     ]);
   });
 
+  it("uses an introductory title paragraph when heading styles are unavailable", () => {
+    const report = analyzeDocument(`
+      <p>Relatorio Setorial da Industria</p>
+      <p>Panorama estrategico 2026</p>
+      <p>Autor: Observatorio da Industria</p>
+      <h1>Introducao</h1>
+      <p>Texto original.</p>
+    `);
+
+    expect(report.title).toBe("Relatorio Setorial da Industria");
+    expect(report.subtitle).toBe("Panorama estrategico 2026");
+  });
+
   it("decorates major sections, tables, images, sources, and callouts", () => {
     const html = decorateBodyHtml(`
       <h1 id="metodologia">Metodologia</h1>

@@ -152,6 +152,19 @@ function assignHeadingIds($) {
 }
 
 function inferTitle($, originalName) {
+  const firstMeaningfulBlock = $("h1, h2, p")
+    .toArray()
+    .map((element) => ({
+      tagName: element.tagName,
+      text: normalizeWhitespace($(element).text()),
+      isSubtitle: $(element).hasClass("subtitle")
+    }))
+    .find((block) => block.text.length >= 8 && !block.isSubtitle && !looksLikeMetadata(block.text));
+
+  if (firstMeaningfulBlock) {
+    return firstMeaningfulBlock.text;
+  }
+
   const firstHeading = normalizeWhitespace($("h1").first().text());
 
   if (firstHeading) {
@@ -205,7 +218,7 @@ function extractMetadata($) {
     }
 
     const matchesLabel = METADATA_LABELS.some((label) => lower.includes(removeAccents(label)));
-    const hasLabelSyntax = /^[A-Za-zÀ-ÿ\s/.-]{3,35}:\s+/.test(text);
+    const hasLabelSyntax = looksLikeMetadata(text);
 
     if (matchesLabel || hasLabelSyntax) {
       const [label, ...rest] = text.split(":");
@@ -217,6 +230,10 @@ function extractMetadata($) {
   });
 
   return dedupeMetadata(metadata).slice(0, 14);
+}
+
+function looksLikeMetadata(text) {
+  return /^[A-Za-zÀ-ÿ\s/.-]{3,35}:\s+/.test(text);
 }
 
 function extractHeadings($) {
