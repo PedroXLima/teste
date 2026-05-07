@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import io
-import math
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
 from typing import Iterable, Literal
 from xml.sax.saxutils import escape
@@ -28,7 +26,6 @@ from reportlab.platypus import (
     Flowable,
     Frame,
     Image,
-    KeepTogether,
     NextPageTemplate,
     PageBreak,
     PageTemplate,
@@ -264,7 +261,7 @@ def infer_date(paragraphs: list[ParagraphBlock]) -> str:
             match = re.search(pattern, paragraph.text, flags=re.IGNORECASE)
             if match:
                 return match.group(0)
-    return datetime.now().strftime("%d/%m/%Y")
+    return ""
 
 
 def infer_keywords(paragraphs: list[ParagraphBlock]) -> list[str]:

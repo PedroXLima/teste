@@ -6,6 +6,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
+from starlette.background import BackgroundTask
 
 from app.converter import convert_docx_to_pdf
 
@@ -236,5 +237,5 @@ async def convert(file: UploadFile = File(...)) -> FileResponse:
         stable_output,
         filename=download_name,
         media_type="application/pdf",
-        background=None,
+        background=BackgroundTask(lambda path: Path(path).unlink(missing_ok=True), stable_output),
     )

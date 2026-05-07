@@ -19,7 +19,7 @@ with an institutional/analytical design system inspired by Brazilian industry in
 ## Run locally
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
