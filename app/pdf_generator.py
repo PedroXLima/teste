@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import uuid
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -152,6 +153,7 @@ class IntelligenceReportTemplate(BaseDocTemplate):
     def __init__(self, filename: str, report_title: str, fonts: FontPack) -> None:
         self.report_title = report_title
         self.fonts = fonts
+        self._heading_counter = 0
 
         left_margin = 1.8 * cm
         right_margin = 1.8 * cm
@@ -188,6 +190,9 @@ class IntelligenceReportTemplate(BaseDocTemplate):
             ]
         )
 
+    def beforeDocument(self) -> None:
+        self._heading_counter = 0
+
     def draw_body_page(self, canvas, doc) -> None:
         canvas.saveState()
         page_width, page_height = A4
@@ -216,7 +221,9 @@ class IntelligenceReportTemplate(BaseDocTemplate):
             if style_name in {"ReportHeading1", "ReportHeading2"}:
                 level = 0 if style_name == "ReportHeading1" else 1
                 text = flowable.getPlainText()
-                bookmark = f"heading-{uuid.uuid4().hex}"
+                slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-") or "section"
+                bookmark = f"heading-{self._heading_counter}-{slug}"
+                self._heading_counter += 1
                 self.canv.bookmarkPage(bookmark)
                 self.notify("TOCEntry", (level, text, self.page, bookmark))
 
