@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOCX → PDF | Observatório da Indústria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Variables ── */
+    :root {
+      --primary:     #005A9C;
+      --navy:        #003B6F;
+      --medium:      #0B63B6;
+      --light:       #D9EAF7;
+      --vlight:      #EEF6FC;
+      --white:       #FFFFFF;
+      --text:        #2B2B2B;
+      --secondary:   #6B7280;
+      --border:      #D1D5DB;
+      --success:     #059669;
+      --error:       #DC2626;
+      --font-head:   'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --font-body:   'Inter', 'Helvetica Neue', Arial, sans-serif;
+      --radius:      10px;
+      --shadow:      0 4px 24px rgba(0,58,111,0.12);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--vlight);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: var(--navy);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon svg { width: 20px; height: 20px; fill: #fff; }
+
+    .nav-title {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 1px;
+    }
+
+    .nav-badge {
+      font-family: var(--font-head);
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 3px 8px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .hero {
+      text-align: center;
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--light);
+      color: var(--primary);
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      background: var(--vlight);
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--primary);
+      background: var(--light);
+    }
+
+    .drop-zone.has-file {
+      border-color: var(--primary);
+      border-style: solid;
+    }
+
+    .drop-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1rem;
+      background: var(--light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drop-icon svg { width: 28px; height: 28px; stroke: var(--primary); fill: none; }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-title {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .drop-sub {
+      font-size: 13px;
+      color: var(--secondary);
+    }
+
+    .drop-sub span {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .file-info {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--vlight);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 16px;
+    }
+
+    .file-info.visible { display: flex; }
+
+    .file-info-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--light);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .file-info-icon svg { width: 18px; height: 18px; stroke: var(--primary); fill: none; }
+
+    .file-info-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .file-info-size {
+      font-size: 12px;
+      color: var(--secondary);
+      flex-shrink: 0;
+    }
+
+    .file-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--secondary);
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+
+    .file-remove:hover { color: var(--error); }
+    .file-remove svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+
+    /* ── Button ── */
+    .convert-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(0,90,156,0.35);
+    }
+
+    .convert-btn:hover:not(:disabled) {
+      background: var(--navy);
+      box-shadow: 0 6px 18px rgba(0,59,111,0.45);
+    }
+
+    .convert-btn:active:not(:disabled) { transform: translateY(1px); }
+    .convert-btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+    .convert-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .progress-wrap.visible { display: flex; }
+
+    .progress-label {
+      font-size: 13px;
+      color: var(--secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--light);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--medium));
+      border-radius: 10px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    /* ── Alert ── */
+    .alert {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .alert.visible { display: flex; }
+
+    .alert-error {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: var(--error);
+    }
+
+    .alert-success {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: var(--success);
+    }
+
+    .alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Download button ── */
+    .download-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      box-shadow: 0 4px 14px rgba(5,150,105,0.35);
+    }
+
+    .download-btn.visible { display: flex; }
+    .download-btn:hover { background: #047857; }
+    .download-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── Features row ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px;
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: 0 2px 10px rgba(0,58,111,0.07);
+      border-top: 3px solid var(--primary);
+    }
+
+    .feature-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .feature-icon svg { width: 20px; height: 20px; stroke: var(--primary); fill: none; }
+
+    .feature-title {
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 11.5px;
+      color: var(--secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 12px;
+      color: var(--secondary);
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    footer strong { color: var(--primary); }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+    </div>
+    <div>
+      <div class="nav-title">Observatório da Indústria</div>
+      <div class="nav-subtitle">Sistema FIEA · Gerador de Relatórios PDF</div>
+    </div>
+  </div>
+  <div class="nav-badge">DOCX → PDF</div>
+</nav>
+
+<!-- ── Main ── -->
+<main>
+  <div class="hero">
+    <div class="hero-tag">Inteligência Estratégica</div>
+    <h1>Transforme DOCX em PDF Institucional</h1>
+    <p>Carregue um arquivo Word e receba um relatório PDF profissional com o design do Observatório da Indústria — capas, tipografia, tabelas e sumários estilizados automaticamente.</p>
+  </div>
+
+  <div class="card">
+    <form id="uploadForm">
+      <!-- Drop zone -->
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" name="file" accept=".docx" />
+        <div class="drop-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <div class="drop-title">Arraste o arquivo DOCX aqui</div>
+        <div class="drop-sub">ou <span>clique para selecionar</span> · máx. 50 MB</div>
+      </div>
+
+      <!-- File info -->
+      <div class="file-info" id="fileInfo">
+        <div class="file-info-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="file-info-name" id="fileName"></div>
+        <div class="file-info-size" id="fileSize"></div>
+        <button type="button" class="file-remove" id="fileRemove" title="Remover arquivo">
+          <svg viewBox="0 0 24 24" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-label">
+          <span id="progressText">Processando documento…</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <!-- Alert -->
+      <div class="alert" id="alertBox">
+        <svg viewBox="0 0 24 24" stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="alertMsg"></span>
+      </div>
+
+      <!-- Convert button -->
+      <button type="submit" class="convert-btn" id="convertBtn" disabled>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Gerar PDF Institucional
+      </button>
+
+      <!-- Download button -->
+      <a class="download-btn" id="downloadBtn" href="#" download>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 13 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="13"/>
+        </svg>
+        Baixar PDF Gerado
+      </a>
+    </form>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+      </div>
+      <div class="feature-title">Design Institucional</div>
+      <div class="feature-desc">Capa, contracapa e páginas de seção com identidade visual profissional.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="feature-title">Tipografia Hierárquica</div>
+      <div class="feature-desc">Títulos, subtítulos e corpo com fontes e espaçamentos precisos.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="0"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="12" y1="3" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <div class="feature-title">Tabelas Estilizadas</div>
+      <div class="feature-desc">Cabeçalho azul escuro, linhas alternadas e bordas institucionais.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
+      <div class="feature-title">Pronto para Impressão</div>
+      <div class="feature-desc">PDF em A4, margens consistentes e cabeçalhos e rodapés automáticos.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <strong>Observatório da Indústria</strong> · Sistema FIEA · Inteligência Estratégica &amp; Análise Industrial
+</footer>
+
+<script>
+  const dropZone   = document.getElementById('dropZone');
+  const fileInput  = document.getElementById('fileInput');
+  const fileInfo   = document.getElementById('fileInfo');
+  const fileName   = document.getElementById('fileName');
+  const fileSize   = document.getElementById('fileSize');
+  const fileRemove = document.getElementById('fileRemove');
+  const convertBtn = document.getElementById('convertBtn');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar  = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const progressPct  = document.getElementById('progressPct');
+  const alertBox     = document.getElementById('alertBox');
+  const alertMsg     = document.getElementById('alertMsg');
+  const downloadBtn  = document.getElementById('downloadBtn');
+  const form         = document.getElementById('uploadForm');
+
+  let selectedFile = null;
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
+  function setFile(file) {
+    if (!file || !file.name.toLowerCase().endsWith('.docx')) {
+      showAlert('error', 'Apenas arquivos .docx são suportados.');
+      return;
+    }
+    selectedFile = file;
+    fileName.textContent = file.name;
+    fileSize.textContent = formatBytes(file.size);
+    fileInfo.classList.add('visible');
+    dropZone.classList.add('has-file');
+    convertBtn.disabled = false;
+    clearAlert();
+    downloadBtn.classList.remove('visible');
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    fileInfo.classList.remove('visible');
+    dropZone.classList.remove('has-file');
+    convertBtn.disabled = true;
+    clearAlert();
+    downloadBtn.classList.remove('visible');
+  }
+
+  function showAlert(type, msg) {
+    alertBox.className = 'alert visible alert-' + type;
+    alertMsg.textContent = msg;
+  }
+
+  function clearAlert() {
+    alertBox.className = 'alert';
+    alertMsg.textContent = '';
+  }
+
+  function setProgress(pct, text) {
+    progressBar.style.width = pct + '%';
+    progressPct.textContent = pct + '%';
+    if (text) progressText.textContent = text;
+  }
+
+  /* Drag and drop */
+  ['dragenter', 'dragover'].forEach(ev => {
+    dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
+  });
+  dropZone.addEventListener('drop', e => {
+    const files = e.dataTransfer.files;
+    if (files.length) setFile(files[0]);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) setFile(fileInput.files[0]);
+  });
+
+  fileRemove.addEventListener('click', () => clearFile());
+
+  /* Prevent the file input click from bubbling to the form */
+  fileInput.addEventListener('click', e => e.stopPropagation());
+
+  /* Form submit */
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!selectedFile) return;
+
+    /* UI: loading state */
+    convertBtn.disabled = true;
+    convertBtn.innerHTML = '<div class="spinner"></div> Gerando PDF…';
+    progressWrap.classList.add('visible');
+    downloadBtn.classList.remove('visible');
+    clearAlert();
+    setProgress(10, 'Enviando arquivo…');
+
+    /* Simulate progress while waiting */
+    const progressSteps = [
+      [20, 'Analisando estrutura do documento…'],
+      [40, 'Aplicando sistema de design…'],
+      [60, 'Formatando tabelas e imagens…'],
+      [75, 'Renderizando tipografia…'],
+      [88, 'Gerando PDF…'],
+    ];
+    let stepIdx = 0;
+    const ticker = setInterval(() => {
+      if (stepIdx < progressSteps.length) {
+        const [pct, txt] = progressSteps[stepIdx++];
+        setProgress(pct, txt);
+      }
+    }, 1200);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const response = await fetch('/convert', {
+        method: 'POST',
+        body: formData,
+      });
+
+      clearInterval(ticker);
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || `Erro ${response.status}`);
+      }
+
+      setProgress(100, 'PDF gerado com sucesso!');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const originalName = selectedFile.name.replace(/\.docx$/i, '');
+
+      downloadBtn.href = url;
+      downloadBtn.download = originalName + '.pdf';
+      downloadBtn.classList.add('visible');
+      showAlert('success', 'PDF gerado com sucesso! Clique no botão abaixo para baixar.');
+
+    } catch (err) {
+      clearInterval(ticker);
+      showAlert('error', err.message || 'Erro ao gerar o PDF. Tente novamente.');
+      setProgress(0, '');
+      progressWrap.classList.remove('visible');
+    }
+
+    convertBtn.disabled = false;
+    convertBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      Gerar PDF Institucional`;
+  });
+</script>
+</body>
+</html>
