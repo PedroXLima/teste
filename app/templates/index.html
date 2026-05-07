@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DOCX → PDF institucional</title>
+  <style>
+    :root {
+      --blue: #005a9c;
+      --navy: #003b6f;
+      --paper: #eef6fc;
+      --text: #2b2b2b;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(165deg, var(--navy) 0%, var(--blue) 40%, #001f3f 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(480px, 100%);
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    p.lead {
+      margin: 0 0 22px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    label.upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 16px;
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      background: var(--paper);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    label.upload:hover,
+    label.upload:focus-within {
+      border-color: var(--blue);
+      background: #e3f0fa;
+    }
+    input[type="file"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+    .name {
+      font-size: 0.85rem;
+      color: var(--muted);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .err {
+      margin-top: 14px;
+      font-size: 0.88rem;
+      color: #b91c1c;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Relatório em PDF</h1>
+    <p class="lead">Envie um <strong>.docx</strong> para gerar um PDF no padrão institucional (conteúdo preservado, layout profissional).</p>
+    <form id="f" action="/api/convert" method="post" enctype="multipart/form-data">
+      <label class="upload" tabindex="0">
+        <input id="docx" type="file" name="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+        <span class="btn" id="pick">Escolher arquivo DOCX</span>
+        <span style="font-size:0.85rem;color:var(--muted);">ou arraste para esta área</span>
+      </label>
+      <div class="row">
+        <span class="name" id="fname">Nenhum arquivo selecionado</span>
+        <button type="submit" class="btn" id="go" disabled>Gerar PDF</button>
+      </div>
+      <div class="err" id="err" hidden></div>
+    </form>
+    <p class="note">O servidor analisa o documento e aplica capa, cabeçalhos, tabelas institucionais, figuras e contracapa. Footnotes muito avançados podem precisar de revisão manual.</p>
+  </div>
+  <script>
+    const inp = document.getElementById('docx');
+    const fname = document.getElementById('fname');
+    const go = document.getElementById('go');
+    const err = document.getElementById('err');
+    const form = document.getElementById('f');
+
+    inp.addEventListener('change', () => {
+      err.hidden = true;
+      const f = inp.files && inp.files[0];
+      fname.textContent = f ? f.name : 'Nenhum arquivo selecionado';
+      go.disabled = !f || !f.name.toLowerCase().endsWith('.docx');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.hidden = true;
+      const fd = new FormData(form);
+      go.disabled = true;
+      try {
+        const res = await fetch('/api/convert', { method: 'POST', body: fd });
+        if (!res.ok) {
+          let msg = 'Falha ao gerar PDF.';
+          try {
+            const j = await res.json();
+            if (j.detail) msg = typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail);
+          } catch (_) {}
+          throw new Error(msg);
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'relatorio.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (x) {
+        err.textContent = x.message || String(x);
+        err.hidden = false;
+      } finally {
+        go.disabled = false;
+      }
+    });
+
+    const label = document.querySelector('label.upload');
+    ;['dragenter','dragover'].forEach(ev => label.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); label.style.borderColor = '#005a9c'; }));
+    ;['dragleave','drop'].forEach(ev => label.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); label.style.borderColor = ''; }));
+    label.addEventListener('drop', e => {
+      const fl = e.dataTransfer.files;
+      if (fl.length && fl[0].name.toLowerCase().endsWith('.docx')) {
+        inp.files = fl;
+        inp.dispatchEvent(new Event('change'));
+      }
+    });
+  </script>
+</body>
+</html>

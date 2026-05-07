@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ meta.title }}</title>
+  <link rel="stylesheet" href="static/report.css" />
+</head>
+<body>
+  <div id="running-header">{{ report_title_short }}</div>
+
+  <!-- Cover -->
+  <section class="cover">
+    <div class="cover-bg"></div>
+    <div class="cover-pattern"></div>
+    <div class="cover-inner">
+      <div class="cover-logos">
+        {% for logo in cover_logos %}
+        <img src="{{ logo }}" alt="" />
+        {% endfor %}
+      </div>
+      <div class="cover-panel">
+        <h1 class="cover-title">{{ meta.title }}</h1>
+        {% if meta.subtitle %}
+        <p class="cover-subtitle">{{ meta.subtitle }}</p>
+        {% endif %}
+        <div class="cover-meta">
+          {% if meta.authors %}
+          <div class="cover-meta-row"><strong>Autores</strong><span>{{ meta.authors }}</span></div>
+          {% endif %}
+          {% if meta.version %}
+          <div class="cover-meta-row"><strong>Versão</strong><span>{{ meta.version }}</span></div>
+          {% endif %}
+          {% if meta.date %}
+          <div class="cover-meta-row"><strong>Data</strong><span>{{ meta.date }}</span></div>
+          {% endif %}
+          {% if meta.keywords and not meta.version %}
+          <div class="cover-meta-row"><strong>Notas</strong><span>{{ meta.keywords }}</span></div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if cover_badges %}
+    <div class="cover-badge">{{ cover_badges | join(' · ') }}</div>
+    {% endif %}
+  </section>
+
+  <!-- Credits -->
+  {% if credits_groups or meta.authors %}
+  <section class="credits-page">
+    <h2>Realização e equipe</h2>
+    <div class="credits-grid">
+      {% if meta.authors %}
+      <div class="credit-row"><strong>Autores:</strong> {{ meta.authors }}</div>
+      {% endif %}
+      {% for row in credits_groups %}
+      <div class="credit-row"><strong>{{ row.label }}:</strong> {{ row.value }}</div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Table of contents -->
+  {% if toc %}
+  <section class="toc-page page-break">
+    <h2>Sumário</h2>
+    <hr class="toc-rule" />
+    <table class="toc-table">
+      <tbody>
+        {% for e in toc %}
+        <tr class="toc-h{{ e.level }}">
+          <td><a href="#{{ e.anchor }}">{{ e.text }}</a></td>
+          <td class="toc-num"><a href="#{{ e.anchor }}"></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+  <!-- Main document -->
+  <article class="doc-flow">
+    {% for b in blocks %}
+      {% if b.kind == 'section_divider' %}
+      <section class="section-divider {% if b.banner %}with-banner{% endif %}">
+        {% if b.banner %}<div class="method-banner"></div>{% endif %}
+        <div class="section-divider-bg"></div>
+        <div class="section-divider-inner">
+          <h2 class="section-divider-title">{{ b.title_html|safe }}</h2>
+          <div class="section-accent"></div>
+        </div>
+      </section>
+      {% elif b.kind == 'paragraph' %}
+        {% if b.heading_level == 1 %}
+        <h1 id="{{ b.anchor }}">{{ b.html|safe }}</h1>
+        {% elif b.heading_level == 2 %}
+        <h2 id="{{ b.anchor }}">{{ b.html|safe }}</h2>
+        {% elif b.heading_level == 3 %}
+        <h3 id="{{ b.anchor }}">{{ b.html|safe }}</h3>
+        {% elif b.is_callout %}
+        <aside class="callout">
+          <div class="callout-title">Destaque</div>
+          <p>{{ b.html|safe }}</p>
+        </aside>
+        {% elif b.hang_reference %}
+        <p class="hang">{{ b.html|safe }}</p>
+        {% elif b.is_toc %}
+        <p class="toc-from-word">{{ b.html|safe }}</p>
+        {% else %}
+        <p>{{ b.html|safe }}</p>
+        {% endif %}
+      {% elif b.kind == 'table' %}
+      <div class="table-wrap">
+        {% if b.title %}<div class="table-title">{{ b.title }}</div>{% endif %}
+        <table class="report-table {% if not b.has_header %}no-header{% endif %}">
+          {% if b.has_header and b.headers %}
+          <thead>
+            <tr>{% for h in b.headers %}<th>{{ h|safe }}</th>{% endfor %}</tr>
+          </thead>
+          {% endif %}
+          <tbody>
+            {% for row in b.rows %}
+            <tr>{% for cell in row %}<td>{{ cell|safe }}</td>{% endfor %}</tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if b.source %}<p class="table-source">{{ b.source }}</p>{% endif %}
+      </div>
+      {% elif b.kind == 'figure' %}
+      <figure class="figure-wrap">
+        <img src="{{ b.src }}" alt="" />
+        {% if b.caption_html %}
+        <figcaption class="figure-caption">Figura {{ b.figure_index + 1 }} – {{ b.caption_html|safe }}</figcaption>
+        {% elif b.body_html %}
+        <figcaption class="figure-caption">Figura {{ b.figure_index + 1 }} – {{ b.body_html|safe }}</figcaption>
+        {% endif %}
+      </figure>
+      {% endif %}
+    {% endfor %}
+  </article>
+
+  <!-- Back cover -->
+  <section class="back-cover">
+    <div class="back-pattern"></div>
+    <div class="back-inner">
+      <div class="back-logos">
+        {% for logo in cover_logos %}
+        <img src="{{ logo }}" alt="" />
+        {% endfor %}
+      </div>
+      <div class="back-bottom">
+        <div class="back-title-block">
+          <p class="t">{{ meta.title }}</p>
+          {% if meta.subtitle %}<p class="s">{{ meta.subtitle }}</p>{% endif %}
+        </div>
+        <div class="back-contact">
+          {% if meta.keywords %}
+          <span>{{ meta.keywords }}</span>
+          {% else %}
+          <span>Observatório da Indústria · Sistema FIEA</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
