@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOCX PDF Designer</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__content">
+          <p class="eyebrow">Document automation for institutional reports</p>
+          <h1>Transforme DOCX em um PDF institucional pronto para impressao</h1>
+          <p class="hero__copy">
+            Envie um arquivo .docx e gere um PDF com capa editorial, hierarquia institucional,
+            tabelas em estilo analitico, paginas internas consistentes e acabamento visual
+            inspirado em relatorios tecnicos corporativos.
+          </p>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel--primary">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow eyebrow--blue">Geracao de PDF</p>
+              <h2>Upload do arquivo</h2>
+            </div>
+            <span class="badge">DOCX only</span>
+          </div>
+
+          <form id="upload-form" class="upload-form">
+            <label id="dropzone" class="dropzone" for="docx-input">
+              <input id="docx-input" name="docx" type="file" accept=".docx" required />
+              <span class="dropzone__icon" aria-hidden="true">PDF</span>
+              <span class="dropzone__title">Clique para selecionar um DOCX</span>
+              <span class="dropzone__subtitle">ou arraste o arquivo para esta area</span>
+              <span id="selected-file" class="dropzone__file">Nenhum arquivo selecionado</span>
+            </label>
+
+            <div class="form-actions">
+              <button id="submit-button" class="button" type="submit">Gerar PDF institucional</button>
+              <p class="form-note">
+                O conteudo original e preservado; o app reorganiza e estiliza a apresentacao para
+                PDF.
+              </p>
+            </div>
+          </form>
+
+          <div id="status-box" class="status-box" aria-live="polite">
+            Selecione um documento para iniciar a geracao.
+          </div>
+        </section>
+
+        <aside class="panel panel--secondary">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow eyebrow--blue">Sistema visual</p>
+              <h2>O que o app aplica</h2>
+            </div>
+          </div>
+
+          <ul class="feature-list">
+            <li>Capa e contracapa institucionais com padrao visual azul corporativo</li>
+            <li>Cabecalho interno com numeracao de paginas e hierarquia editorial</li>
+            <li>Divisorias de secao para introducao, metodologia, analise, referencias e anexos</li>
+            <li>Tabelas com cabecalho azul escuro, listras claras e bordas discretas</li>
+            <li>Figuras com legendas, fontes e blocos visuais consistentes</li>
+            <li>Tratamento de creditos, catalogacao e sumario automatizado</li>
+          </ul>
+
+          <div class="info-card">
+            <h3>Recomendacao</h3>
+            <p>
+              Arquivos DOCX com estilos de titulo e subtitulo definidos tendem a produzir melhores
+              capas, sumario e divisorias.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
