@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DOCX para PDF Institucional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero-card">
+        <div class="eyebrow">Observatorio Editorial</div>
+        <h1>Gerador de relatorios PDF a partir de DOCX</h1>
+        <p class="lead">
+          Envie um arquivo DOCX e gere um PDF institucional em formato A4 com capa,
+          divisorias de secao, sumario, tabelas estilizadas e identidade visual analitica.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="messages">
+              {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form class="upload-form" action="{{ url_for('generate') }}" method="post" enctype="multipart/form-data">
+          <label class="upload-dropzone" for="docx_file">
+            <input id="docx_file" name="docx_file" type="file" accept=".docx" required>
+            <span class="upload-title">Selecionar arquivo DOCX</span>
+            <span class="upload-subtitle">Tamanho maximo de 25 MB. O PDF sera baixado automaticamente apos a geracao.</span>
+          </label>
+          <button type="submit">Gerar PDF institucional</button>
+        </form>
+      </section>
+
+      <section class="feature-grid">
+        <article class="feature-card">
+          <h2>Hierarquia editorial</h2>
+          <p>Capa institucional, paginas de credito, sumario, cabecalhos, divisoes de secao e pagina final.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Preservacao estrutural</h2>
+          <p>Texto, tabelas, figuras, legendas, fontes, referencias e anexos sao mantidos no fluxo do documento.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Estilo analitico</h2>
+          <p>Paleta azul corporativa, tabelas institucionais, caixas de destaque e composicao pronta para impressao.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
