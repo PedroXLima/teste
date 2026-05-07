@@ -1,0 +1,601 @@
+/* =============================================================
+   Institutional Report — Design System
+   Inspired by Observatório da Indústria / Sistema FIEA
+   Renders to print-ready A4 PDF via WeasyPrint.
+   ============================================================= */
+
+/* ---------- Color tokens ---------- */
+:root {
+  --primary-blue: #005A9C;
+  --dark-navy:    #003B6F;
+  --medium-blue:  #0B63B6;
+  --light-blue:   #D9EAF7;
+  --vlight-blue:  #EEF6FC;
+  --white:        #FFFFFF;
+  --text:         #2B2B2B;
+  --text-muted:   #6B7280;
+  --border:       #D1D5DB;
+}
+
+/* ---------- Page setup ---------- */
+@page {
+  size: A4 portrait;
+  margin: 22mm 18mm 22mm 18mm;
+  @top-left {
+    content: element(header);
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: "Inter", "Source Sans Pro", "Roboto", sans-serif;
+    font-size: 9pt;
+    color: var(--text-muted);
+  }
+  @bottom-left {
+    content: string(report-title);
+    font-family: "Inter", "Source Sans Pro", "Roboto", sans-serif;
+    font-size: 8.5pt;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+/* Cover and back cover pages have no margins so we can use full bleed */
+@page :first {
+  margin: 0;
+  @top-left { content: ""; }
+  @bottom-right { content: ""; }
+  @bottom-left { content: ""; }
+}
+
+@page cover {
+  size: A4 portrait;
+  margin: 0;
+  @top-left { content: ""; }
+  @bottom-right { content: ""; }
+  @bottom-left { content: ""; }
+}
+@page back {
+  size: A4 portrait;
+  margin: 0;
+  @top-left { content: ""; }
+  @bottom-right { content: ""; }
+  @bottom-left { content: ""; }
+}
+@page divider {
+  size: A4 portrait;
+  margin: 0;
+  @top-left { content: ""; }
+  @bottom-right { content: ""; }
+  @bottom-left { content: ""; }
+}
+
+.cover-page    { page: cover; }
+.back-cover-page { page: back; }
+.section-divider { page: divider; }
+
+/* ---------- Base typography ---------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+}
+
+body {
+  font-family: "Inter", "Source Sans Pro", "Roboto", "Helvetica", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: var(--text);
+  string-set: report-title "Relatório Institucional";
+}
+
+h1, h2, h3, h4, h5, h6, .cover-title, .divider-title, .section-title {
+  font-family: "Montserrat", "Poppins", "Avenir Next", "Inter", sans-serif;
+  font-weight: 700;
+  color: var(--dark-navy);
+}
+
+p { margin: 0 0 0.55em 0; }
+p.empty { margin: 0; height: 0.6em; }
+
+strong { color: var(--text); }
+em { color: inherit; }
+
+/* ---------- Page wrapper ---------- */
+.page {
+  position: relative;
+  page-break-after: always;
+}
+.page:last-child { page-break-after: auto; }
+
+.page.content-page {
+  /* WeasyPrint applies the @page margins, content fills naturally */
+}
+
+/* ---------- Page header (running) ---------- */
+.page-header {
+  display: block;
+  margin: -4mm 0 10mm 0;
+}
+.page-header-title {
+  display: block;
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-size: 8.5pt;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary-blue);
+  font-weight: 600;
+}
+.page-header-divider {
+  display: block;
+  margin-top: 4pt;
+  height: 1.2pt;
+  background-color: var(--primary-blue);
+  width: 100%;
+}
+
+.page-main { display: block; }
+
+/* ---------- Section titles (inside content pages) ---------- */
+.section-title {
+  display: block;
+  font-size: 22pt;
+  color: var(--primary-blue);
+  margin: 0 0 6pt 0;
+  text-align: left;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+}
+.section-title.small { font-size: 16pt; }
+.section-title.big   { font-size: 30pt; letter-spacing: 0.05em; }
+
+.section-rule {
+  display: block;
+  height: 2pt;
+  width: 56mm;
+  background-color: var(--primary-blue);
+  margin: 0 0 16pt 0;
+}
+
+/* ---------- Body headings ---------- */
+.h {
+  color: var(--dark-navy);
+  page-break-after: avoid;
+}
+.h-1 {
+  font-size: 20pt;
+  margin: 18pt 0 4pt 0;
+  color: var(--primary-blue);
+  border-bottom: 1pt solid var(--border);
+  padding-bottom: 4pt;
+}
+.h-2 {
+  font-size: 15pt;
+  margin: 16pt 0 4pt 0;
+  color: var(--primary-blue);
+}
+.h-3 {
+  font-size: 12.5pt;
+  margin: 12pt 0 3pt 0;
+  color: var(--medium-blue);
+}
+.h-4 {
+  font-size: 11pt;
+  margin: 10pt 0 2pt 0;
+  color: var(--dark-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Paragraphs & lists ---------- */
+.p {
+  text-align: justify;
+  hyphens: auto;
+  orphans: 2;
+  widows: 2;
+}
+
+ul.list, ol.list {
+  margin: 6pt 0 10pt 0;
+  padding-left: 18pt;
+}
+ul.list li, ol.list li {
+  margin: 0 0 4pt 0;
+}
+ul.list li::marker { color: var(--primary-blue); }
+ol.list li::marker { color: var(--primary-blue); font-weight: 600; }
+
+/* ---------- Captions ---------- */
+.caption {
+  font-size: 9pt;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 4pt 0 12pt 0;
+  font-style: italic;
+}
+
+/* ---------- Callout / quote ---------- */
+.callout {
+  background: var(--vlight-blue);
+  border-left: 3pt solid var(--primary-blue);
+  padding: 10pt 14pt;
+  margin: 12pt 0;
+  color: var(--text);
+  page-break-inside: avoid;
+}
+.callout p { margin: 0; }
+
+/* ---------- Figures ---------- */
+.figure {
+  margin: 10pt 0 6pt 0;
+  text-align: center;
+  page-break-inside: avoid;
+}
+.figure-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4pt;
+  box-shadow: 0 0 0 1pt var(--border);
+}
+
+/* ---------- Tables ---------- */
+.table-wrap {
+  margin: 10pt 0 14pt 0;
+  page-break-inside: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+}
+.data-table thead th {
+  background: var(--dark-navy);
+  color: var(--white);
+  font-weight: 700;
+  text-align: left;
+  padding: 7pt 9pt;
+  border-bottom: 1pt solid var(--dark-navy);
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-size: 9pt;
+  letter-spacing: 0.02em;
+}
+.data-table tbody td {
+  padding: 6pt 9pt;
+  border-bottom: 0.5pt solid var(--border);
+  vertical-align: top;
+}
+.data-table tbody tr.alt td {
+  background: var(--light-blue);
+}
+.data-table tbody tr:last-child td {
+  border-bottom: 1pt solid var(--border);
+}
+
+/* numbers right-aligned heuristic: any cell that is purely numeric */
+.data-table td.num,
+.data-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- Page break helper ---------- */
+.page-break {
+  page-break-after: always;
+  height: 0;
+}
+
+/* ============================================================
+   COVER PAGE
+   ============================================================ */
+.cover-page {
+  width: 210mm;
+  height: 297mm;
+  color: var(--white);
+  overflow: hidden;
+  page-break-before: always;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(0,30,60,0.45) 0%, rgba(0,30,60,0.0) 35%, rgba(0,30,60,0.55) 100%),
+    linear-gradient(160deg, #0B63B6 0%, #005A9C 35%, #003B6F 70%, #001F3D 100%);
+}
+.cover-bg, .cover-overlay { display: none; }
+.cover-network {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 22mm 22mm, 22mm 22mm;
+  background-position: 0 0, 0 0;
+  opacity: 0.9;
+}
+.cover-top {
+  position: absolute;
+  top: 22mm;
+  left: 22mm;
+  right: 22mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cover-eyebrow {
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-size: 9.5pt;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  border-left: 2pt solid var(--white);
+  padding-left: 8pt;
+}
+.cover-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24mm 22mm 28mm 22mm;
+  background: linear-gradient(180deg, rgba(0,59,111,0) 0%, rgba(0,59,111,0.85) 60%, rgba(0,31,61,0.95) 100%);
+}
+.cover-title {
+  font-family: "Montserrat", "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 34pt;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  margin: 0 0 10pt 0;
+  text-transform: uppercase;
+  max-width: 145mm;
+}
+.cover-subtitle {
+  font-size: 13pt;
+  font-weight: 400;
+  color: rgba(255,255,255,0.92);
+  margin: 0 0 14pt 0;
+  max-width: 150mm;
+  line-height: 1.35;
+}
+.cover-divider {
+  width: 40mm;
+  height: 1.5pt;
+  background: var(--white);
+  opacity: 0.6;
+  margin: 6pt 0 12pt 0;
+}
+.cover-meta {
+  display: block;
+  color: rgba(255,255,255,0.85);
+  font-size: 9pt;
+}
+.cover-meta-line {
+  display: block;
+  margin-bottom: 3pt;
+}
+.cover-meta-label {
+  display: inline-block;
+  min-width: 22mm;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  font-size: 8pt;
+}
+.cover-badge {
+  position: absolute;
+  right: 16mm;
+  bottom: 14mm;
+  background: var(--white);
+  color: var(--dark-navy);
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 9pt;
+  letter-spacing: 0.1em;
+  padding: 6pt 12pt;
+  border-radius: 2pt;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   SECTION DIVIDER PAGES
+   ============================================================ */
+.section-divider {
+  width: 210mm;
+  height: 297mm;
+  color: var(--white);
+  overflow: hidden;
+  page-break-before: always;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(0,30,60,0.05) 0%, rgba(0,30,60,0.55) 100%),
+    linear-gradient(135deg, #0B63B6 0%, #005A9C 30%, #003B6F 70%, #001F3D 100%);
+}
+.divider-bg, .divider-overlay { display: none; }
+.divider-network {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 18mm 18mm, 18mm 18mm;
+}
+.divider-content {
+  position: absolute;
+  left: 22mm;
+  right: 22mm;
+  bottom: 38mm;
+}
+.divider-eyebrow {
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-size: 10pt;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 12pt;
+}
+.divider-title {
+  font-family: "Montserrat", "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 40pt;
+  line-height: 1.05;
+  color: var(--white);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  max-width: 160mm;
+}
+.divider-accent {
+  width: 50mm;
+  height: 3pt;
+  background: var(--white);
+  margin-top: 14pt;
+}
+
+/* ============================================================
+   CREDITS / COPYRIGHT / PRESENTATION
+   ============================================================ */
+.credits-body p,
+.copyright-body p,
+.presentation-body p {
+  margin-bottom: 8pt;
+}
+.credits-body strong { color: var(--dark-navy); }
+.copyright-body { font-size: 9pt; color: var(--text-muted); }
+.copyright-body p { margin-bottom: 4pt; }
+
+/* ============================================================
+   TABLE OF CONTENTS — table layout (most reliable in WeasyPrint)
+   ============================================================ */
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: table;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.toc-item { display: table-row; }
+.toc-item > * { display: table-cell; padding: 6pt 0; vertical-align: baseline; }
+.toc-item .toc-title {
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-weight: 600;
+  color: var(--dark-navy);
+  border-bottom: 0.4pt dotted var(--border);
+  padding-right: 12pt;
+  width: 100%;
+}
+.toc-item .toc-leader { display: none; }
+.toc-item .toc-page {
+  color: var(--primary-blue);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+  border-bottom: 0.4pt dotted var(--border);
+  white-space: nowrap;
+  width: 18mm;
+}
+.toc-item.sub { font-size: 10pt; color: var(--text-muted); }
+.toc-item.sub > * { padding-top: 3pt; padding-bottom: 3pt; }
+.toc-item.sub .toc-title {
+  font-weight: 400;
+  color: var(--text);
+  border-bottom: none;
+}
+.toc-item.sub .toc-page { border-bottom: none; color: var(--text-muted); font-weight: 600; }
+.toc-item.sub.indent-1 .toc-title { padding-left: 14pt; }
+.toc-item.sub.indent-2 .toc-title { padding-left: 28pt; }
+
+/* ============================================================
+   REFERENCES
+   ============================================================ */
+.ref-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ref-item {
+  font-size: 9.5pt;
+  line-height: 1.45;
+  margin: 0 0 6pt 0;
+  padding-left: 14pt;
+  text-indent: -14pt;
+  text-align: left;
+}
+
+/* ============================================================
+   ANNEXES
+   ============================================================ */
+.annexes-page .section-title.big {
+  color: var(--primary-blue);
+  font-weight: 800;
+}
+
+/* ============================================================
+   BACK COVER
+   ============================================================ */
+.back-cover-page {
+  width: 210mm;
+  height: 297mm;
+  color: var(--white);
+  overflow: hidden;
+  page-break-before: always;
+  position: relative;
+  background:
+    linear-gradient(160deg, #003B6F 0%, #005A9C 60%, #0B63B6 100%);
+}
+.back-bg { display: none; }
+.back-network {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 24mm 24mm, 24mm 24mm;
+}
+.back-content {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22mm;
+}
+.back-bottom {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+.back-bottom-left, .back-bottom-right {
+  display: table-cell;
+  vertical-align: bottom;
+}
+.back-bottom-left { width: 95mm; padding-right: 6mm; }
+.back-bottom-right {
+  width: 65mm;
+  text-align: right;
+  font-size: 9.5pt;
+  color: rgba(255,255,255,0.92);
+  padding-left: 6mm;
+}
+.back-bottom-right p { margin: 0 0 4pt 0; }
+.back-title {
+  font-family: "Montserrat", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 16pt;
+  line-height: 1.2;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.back-subtitle {
+  margin-top: 6pt;
+  font-size: 10pt;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.35;
+}
+.back-divider {
+  margin-top: 14pt;
+  height: 1pt;
+  background: rgba(255,255,255,0.6);
+}
+.back-footer {
+  margin-top: 8pt;
+  font-size: 8.5pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}

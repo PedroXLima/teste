@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.env
+.idea/
+.vscode/
+
+# generated test artifacts
+tests/sample.pdf
+tests/sample.html
+tests/_sample_chart.png
+tests/pages/

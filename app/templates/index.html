@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DOCX → PDF Institucional</title>
+  <style>
+    :root {
+      --primary-blue: #005A9C;
+      --dark-navy: #003B6F;
+      --medium-blue: #0B63B6;
+      --light-blue: #D9EAF7;
+      --vlight-blue: #EEF6FC;
+      --text: #2B2B2B;
+      --text-muted: #6B7280;
+      --border: #D1D5DB;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: "Inter", "Source Sans Pro", "Roboto", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(160deg, var(--dark-navy) 0%, var(--primary-blue) 60%, var(--medium-blue) 100%);
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(transparent 0, transparent calc(100% - 1px), rgba(255,255,255,0.06) 100%),
+        linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgba(255,255,255,0.06) 100%);
+      background-size: 28px 28px;
+      z-index: 0;
+    }
+    header.top {
+      position: relative;
+      z-index: 1;
+      padding: 28px 32px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-bar {
+      width: 4px; height: 28px; background: #fff; opacity: 0.85;
+    }
+    .brand-eyebrow {
+      letter-spacing: 0.32em; font-size: 11px; text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+    }
+    .brand-title {
+      font-family: "Montserrat", "Poppins", "Inter", sans-serif;
+      font-weight: 800; font-size: 18px; letter-spacing: 0.04em;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 30px 80px rgba(0, 30, 60, 0.35), 0 6px 18px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .card-head {
+      padding: 28px 32px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .eyebrow {
+      color: var(--primary-blue);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: "Montserrat", "Poppins", "Inter", sans-serif;
+      font-size: 26px;
+      color: var(--dark-navy);
+      margin: 0 0 6px 0;
+      font-weight: 800;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      margin: 0 0 18px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .card-body { padding: 24px 32px 28px; }
+
+    .drop {
+      border: 2px dashed var(--medium-blue);
+      background: var(--vlight-blue);
+      border-radius: 10px;
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.05s;
+    }
+    .drop:hover, .drop.dragover {
+      background: var(--light-blue);
+      border-color: var(--primary-blue);
+    }
+    .drop.dragover { transform: scale(1.005); }
+    .drop input[type=file] { display: none; }
+    .drop-icon {
+      width: 56px; height: 56px; margin: 0 auto 12px;
+      border-radius: 50%;
+      background: var(--primary-blue);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .drop-title {
+      font-weight: 700; color: var(--dark-navy);
+      font-size: 16px; margin-bottom: 4px;
+    }
+    .drop-hint {
+      color: var(--text-muted); font-size: 13px;
+    }
+    .file-name {
+      margin-top: 12px;
+      color: var(--primary-blue);
+      font-weight: 600;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 22px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: background 0.15s, transform 0.05s;
+    }
+    button[type=submit] {
+      background: var(--primary-blue);
+      color: #fff;
+    }
+    button[type=submit]:hover { background: var(--dark-navy); }
+    button[type=submit]:disabled { background: var(--text-muted); cursor: not-allowed; }
+    button.secondary {
+      background: transparent;
+      color: var(--primary-blue);
+      border: 1.5px solid var(--primary-blue);
+    }
+    button.secondary:hover { background: var(--vlight-blue); }
+
+    .meta {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .meta strong { color: var(--dark-navy); }
+
+    .status {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+    .status.show { display: block; }
+    .status.info { background: var(--vlight-blue); color: var(--dark-navy); border-left: 3px solid var(--primary-blue); }
+    .status.error { background: #FEE2E2; color: #7F1D1D; border-left: 3px solid #DC2626; }
+    .status.success { background: #DCFCE7; color: #14532D; border-left: 3px solid #16A34A; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(0,0,0,0.15);
+      border-top-color: var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer.bottom {
+      position: relative;
+      z-index: 1;
+      padding: 18px 32px;
+      color: rgba(255,255,255,0.75);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand-bar"></div>
+    <div>
+      <div class="brand-eyebrow">Observatório · Inteligência Estratégica</div>
+      <div class="brand-title">DOCX → PDF Institucional</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-head">
+        <div class="eyebrow">Conversão Editorial</div>
+        <h1>Transforme um DOCX em um PDF institucional</h1>
+        <p class="subtitle">
+          Faça o upload de um arquivo <strong>.docx</strong> e gere um relatório
+          em formato A4 retrato, com capa, sumário, divisores de seção, tabelas
+          com identidade azul, callouts e contracapa, seguindo o sistema de
+          design corporativo descrito.
+        </p>
+      </div>
+      <div class="card-body">
+        <form id="form" method="post" action="/convert" enctype="multipart/form-data">
+          <label class="drop" id="drop" for="file">
+            <div class="drop-icon">↑</div>
+            <div class="drop-title">Arraste seu arquivo .docx aqui</div>
+            <div class="drop-hint">ou clique para selecionar (até 50 MB)</div>
+            <input id="file" name="docx" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+            <div class="file-name" id="fileName"></div>
+          </label>
+
+          <div class="actions">
+            <button type="submit" id="submit" disabled>Gerar PDF Institucional</button>
+            <button type="button" class="secondary" id="previewBtn" disabled>Pré-visualizar HTML</button>
+          </div>
+
+          <div class="status" id="status"></div>
+
+          <div class="meta">
+            <strong>O que é preservado:</strong> texto, hierarquia de títulos,
+            tabelas, figuras, legendas, listas, referências e anexos.
+            <br/>
+            <strong>O que é aplicado:</strong> capa institucional, divisores
+            de seção, header com linha azul, paleta corporativa (#005A9C),
+            tipografia editorial e tabelas com cabeçalho azul-marinho.
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bottom">© Sistema FIEA · Observatório da Indústria — Modelo de design</footer>
+
+  <script>
+    const drop = document.getElementById('drop');
+    const fileInput = document.getElementById('file');
+    const fileName = document.getElementById('fileName');
+    const submit = document.getElementById('submit');
+    const previewBtn = document.getElementById('previewBtn');
+    const form = document.getElementById('form');
+    const status = document.getElementById('status');
+
+    function setStatus(kind, html) {
+      status.className = 'status show ' + kind;
+      status.innerHTML = html;
+    }
+    function clearStatus() {
+      status.className = 'status';
+      status.innerHTML = '';
+    }
+
+    function handleFiles(files) {
+      if (!files || !files.length) return;
+      const f = files[0];
+      if (!f.name.toLowerCase().endsWith('.docx')) {
+        setStatus('error', 'Por favor envie um arquivo .docx válido.');
+        fileInput.value = '';
+        fileName.textContent = '';
+        submit.disabled = true;
+        previewBtn.disabled = true;
+        return;
+      }
+      fileName.textContent = f.name + '  ·  ' + (f.size/1024/1024).toFixed(2) + ' MB';
+      submit.disabled = false;
+      previewBtn.disabled = false;
+      clearStatus();
+    }
+
+    fileInput.addEventListener('change', e => handleFiles(e.target.files));
+    ['dragenter','dragover'].forEach(ev =>
+      drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('dragover'); })
+    );
+    ['dragleave','drop'].forEach(ev =>
+      drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('dragover'); })
+    );
+    drop.addEventListener('drop', e => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length) {
+        fileInput.files = dt.files;
+        handleFiles(dt.files);
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!fileInput.files || !fileInput.files.length) return;
+      submit.disabled = true;
+      previewBtn.disabled = true;
+      setStatus('info', '<span class="spinner"></span> Gerando PDF institucional...');
+
+      const fd = new FormData(form);
+      try {
+        const resp = await fetch('/convert', { method: 'POST', body: fd });
+        if (!resp.ok) {
+          const text = await resp.text();
+          setStatus('error', 'Erro ao gerar o PDF: ' + (text || resp.status));
+          submit.disabled = false;
+          previewBtn.disabled = false;
+          return;
+        }
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (fileInput.files[0].name.replace(/\.docx$/i, '') + '.pdf');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        setStatus('success', 'PDF pronto. O download foi iniciado.');
+      } catch (err) {
+        setStatus('error', 'Falha de rede ao enviar: ' + err);
+      } finally {
+        submit.disabled = false;
+        previewBtn.disabled = false;
+      }
+    });
+
+    previewBtn.addEventListener('click', async () => {
+      if (!fileInput.files || !fileInput.files.length) return;
+      const fd = new FormData(form);
+      previewBtn.disabled = true;
+      setStatus('info', '<span class="spinner"></span> Gerando pré-visualização...');
+      try {
+        const resp = await fetch('/preview', { method: 'POST', body: fd });
+        if (!resp.ok) {
+          const text = await resp.text();
+          setStatus('error', 'Erro: ' + (text || resp.status));
+          return;
+        }
+        const html = await resp.text();
+        const w = window.open('', '_blank');
+        if (w) {
+          w.document.open();
+          w.document.write(html);
+          w.document.close();
+          clearStatus();
+        } else {
+          setStatus('error', 'Bloqueio de pop-ups impediu a visualização. Permita pop-ups e tente novamente.');
+        }
+      } catch (err) {
+        setStatus('error', 'Falha: ' + err);
+      } finally {
+        previewBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
