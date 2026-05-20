@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Divisão das Carteiras por Bairro em Maceió</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 18mm;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, Roboto, Arial, sans-serif;
+        color: #2b2b2b;
+        background: #ffffff;
+      }
+
+      .page {
+        width: 100%;
+        min-height: calc(297mm - 36mm);
+        position: relative;
+        page-break-after: always;
+      }
+
+      .white-page {
+        background: #ffffff;
+      }
+
+      .references {
+        padding: 4mm 0 0 0;
+      }
+
+      .right-rail {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 10mm;
+        height: 100%;
+        background: linear-gradient(180deg, #0b63b6, #005a9c);
+        border-radius: 3mm;
+      }
+
+      .logo-color,
+      .center-brand {
+        width: 68mm;
+        height: 11mm;
+        object-fit: contain;
+        border: 0.3mm solid #d1d5db;
+        border-radius: 1.6mm;
+        padding: 1.5mm;
+      }
+
+      h1 {
+        margin: 10mm 0 7mm;
+        font-size: 13mm;
+        color: #005a9c;
+      }
+
+      p {
+        font-size: 4.1mm;
+        line-height: 1.65;
+        margin: 0 0 4mm;
+        max-width: 152mm;
+      }
+
+      .back-cover {
+        background: linear-gradient(180deg, #003b6f, #005a9c);
+        color: #ffffff;
+        padding: 14mm 10mm 12mm;
+      }
+
+      .back-cover .center-brand {
+        border-color: rgba(255, 255, 255, 0.55);
+        margin: 0 auto 16mm;
+        display: block;
+      }
+
+      .footer-contact {
+        position: absolute;
+        left: 10mm;
+        right: 10mm;
+        bottom: 26mm;
+        display: flex;
+        justify-content: space-between;
+        gap: 8mm;
+      }
+
+      .footer-contact h3 {
+        margin: 0 0 2.5mm;
+        font-size: 5.1mm;
+        font-weight: 700;
+      }
+
+      .footer-contact p {
+        color: #eef6fc;
+        margin: 0 0 1.5mm;
+      }
+
+      .footer-line-white {
+        position: absolute;
+        left: 10mm;
+        right: 10mm;
+        bottom: 14mm;
+        height: 0.4mm;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .data-page h2 {
+        margin: 0 0 4mm;
+        color: #003b6f;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 4mm;
+      }
+
+      thead {
+        background: #003b6f;
+        color: #ffffff;
+      }
+
+      td,
+      th {
+        border: 0.3mm solid #d1d5db;
+        padding: 2.4mm;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page white-page data-page">
+      <h2>Base de Dados Territorial</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Indicador</th>
+            <th>Valor</th>
+            <th>Coordenada X</th>
+            <th>Coordenada Y</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Poço</strong></td>
+            <td>26</td>
+            <td>347.830</td>
+            <td>-24.432</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- REFERÊNCIAS -->
+    <section class="page white-page references">
+      <div class="right-rail"></div>
+
+      <img src="brand-lockup-color.png" class="logo-color" alt="Logos institucionais" />
+
+      <h1>Referências</h1>
+
+      <p>
+        IBGE — Instituto Brasileiro de Geografia e Estatística. Censo Demográfico 2022.
+      </p>
+
+      <p>
+        Receita Federal do Brasil — Dados territoriais e registros administrativos.
+      </p>
+
+      <p>
+        INEP — Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira. Censo da
+        Educação Básica 2024.
+      </p>
+    </section>
+
+    <!-- CONTRACAPA -->
+    <section class="page back-cover">
+      <img src="brand-lockup-white.png" class="center-brand" alt="Logos institucionais" />
+
+      <div class="footer-contact">
+        <div>
+          <h3>Divisão das Carteiras por Bairro em Maceió</h3>
+          <p>Observatório da Indústria de Alagoas</p>
+        </div>
+
+        <div>
+          <p>observatorio@fiea.org.br</p>
+          <p>www.fiea.org.br</p>
+        </div>
+      </div>
+
+      <div class="footer-line-white"></div>
+    </section>
+  </body>
+</html>
